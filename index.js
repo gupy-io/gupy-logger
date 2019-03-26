@@ -1,6 +1,6 @@
-import * as winston from 'winston';
-import * as moment from 'moment';
-import * as WinstonSentryRavenTransport from 'winston-sentry-raven-transport';
+const winston = require('winston');
+const moment = require('moment');
+const WinstonSentryRavenTransport = require('winston-sentry-raven-transport');
 
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
@@ -9,15 +9,7 @@ function prepareErrorToLog(error, messages = []) {
     return error;
 }
 
-interface IConfigInterface {
-    sentry: {
-        enabled: boolean,
-        dsn?: string,
-        level?: string,
-    }
-}
-
-export const loggerFactory = ({config}: { config: IConfigInterface }) => {
+module.exports.loggerFactory = ({config}) => {
     const transports = [];
     transports.push(new (winston.transports.Console)({
         level: config.sentry.level,
@@ -39,7 +31,7 @@ export const loggerFactory = ({config}: { config: IConfigInterface }) => {
 
     const errorFn = logger.error;
 
-    logger.error = (...args): winston.Logger => {
+    logger.error = (...args) => {
         if (!args || !args.length) return;
 
         let error;
