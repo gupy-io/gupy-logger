@@ -1,0 +1,25 @@
+{
+  "name": "gupy-logger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/afonsof/gupy-logger.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/afonsof/gupy-logger/issues"
+  },
+  "homepage": "https://github.com/afonsof/gupy-logger#readme",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "winston": "^3.2.1",
+    "winston-sentry-raven-transport": "^1.0.2"
+  }
+}
