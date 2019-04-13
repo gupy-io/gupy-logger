@@ -2,14 +2,17 @@
   "name": "gupy-logger",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "types": "./lib/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "unit-test": "mocha --reporter=progress -r ts-node/register  --exit --ui bdd ./src/**/*.test.ts",
+    "lint": "tslint ./src/**/*",
+    "test": "npm-run-all lint unit-test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/afonsof/gupy-logger.git"
+    "url": "git+https://github.com/gupy-io/gupy-logger.git"
   },
   "keywords": [],
   "author": "",
@@ -22,5 +25,17 @@
     "moment": "^2.24.0",
     "winston": "^3.2.1",
     "winston-sentry-raven-transport": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.13.4",
+    "chai": "^4.2.0",
+    "gts": "^0.9.0",
+    "gupy-tslint": "git+https://github.com/gupy-io/gupy-tslint.git",
+    "mocha": "^6.0.2",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^8.0.3",
+    "tsc": "^1.20150623.0",
+    "typescript": "^3.4.3"
   }
 }
