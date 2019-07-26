@@ -24,6 +24,7 @@
   "dependencies": {
     "moment": "^2.24.0",
     "winston": "^3.2.1",
+    "winston-logstash-transport": "^2.0.0",
     "winston-sentry-raven-transport": "^1.0.2"
   },
   "devDependencies": {
