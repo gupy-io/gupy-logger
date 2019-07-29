@@ -7,6 +7,13 @@ declare interface IConfig {
         dsn?: string,
         level?: string,
     };
+    logstash?: {
+        enabled?: boolean,
+        application?: string,
+        host?: string,
+        port?: number,
+        level?: string,
+    };
 }
 
 function prepareErrorToLog(error, messages = []) {
@@ -22,7 +29,7 @@ export interface IFactoryInterface {
 
 type LoggerFactoryType = ({config}: IFactoryInterface) => Logger;
 
-export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTransportClass}): LoggerFactoryType => {
+export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTransportClass, logstashTransportClass}): LoggerFactoryType => {
     return ({config}: IFactoryInterface) => {
         const transports = [];
         transports.push(new consoleTransportClass({
@@ -35,6 +42,28 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                 level: 'error',
             }));
         }
+
+        if (config.logstash && config.logstash.enabled && logstashTransportClass) {
+            const appendMetaInfo = winston.format((info) => {
+                return Object.assign(info, {
+                  application: config.logstash.application || 'gupy',
+                  pid: process.pid,
+                  time: moment.utc().format('YYYY-MM-DD HH:mm Z'),
+                });
+            });
+
+            transports.push(new logstashTransportClass({
+                host: config.logstash.host,
+                port: config.logstash.port,
+                level: config.logstash.level,
+                format: winston.format.combine(
+                    appendMetaInfo(),
+                    winston.format.json(),
+                    winston.format.timestamp()
+                ),
+            }));
+        }
+
         const logger: Logger = winston.createLogger({
             format: winston.format.printf(
                 error => `${moment.utc().format('YYYY-MM-DD HH:mm Z')} [${error.level}]: ${error.message}`,
