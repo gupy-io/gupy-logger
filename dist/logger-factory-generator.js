@@ -7,7 +7,7 @@ function prepareErrorToLog(error, messages = []) {
     }
     return error;
 }
-exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass }) => {
+exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }) => {
     return ({ config }) => {
         const transports = [];
         transports.push(new consoleTransportClass({
@@ -17,6 +17,21 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
             transports.push(new sentryTransportClass({
                 dsn: config.sentry.dsn,
                 level: 'error',
+            }));
+        }
+        if (config.logstash && config.logstash.enabled && logstashTransportClass) {
+            const appendMetaInfo = winston.format((info) => {
+                return Object.assign(info, {
+                    application: config.logstash.application || 'gupy',
+                    pid: process.pid,
+                    time: moment.utc().format('YYYY-MM-DD HH:mm Z'),
+                });
+            });
+            transports.push(new logstashTransportClass({
+                host: config.logstash.host,
+                port: config.logstash.port,
+                level: config.logstash.level,
+                format: winston.format.combine(appendMetaInfo(), winston.format.json(), winston.format.timestamp()),
             }));
         }
         const logger = winston.createLogger({
