@@ -38,7 +38,9 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
 
         if (config.sentry.enabled) {
             transports.push(new sentryTransportClass({
-                dsn: config.sentry.dsn,
+                sentryOpts: {
+                    dsn: config.sentry.dsn,
+                },
                 level: 'error',
             }));
         }
