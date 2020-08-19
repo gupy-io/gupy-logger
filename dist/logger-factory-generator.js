@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
+const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
         error.message = `${error.message} :: ${messages.join(',')}`;
@@ -26,7 +27,7 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
                 return Object.assign(info, {
                     application: config.logstash.application || 'gupy',
                     pid: process.pid,
-                    time: moment.utc().format('YYYY-MM-DD HH:mm Z'),
+                    time: moment.utc().format(DATETIME_FORMAT),
                 });
             });
             transports.push(new logstashTransportClass({
@@ -37,7 +38,7 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
             }));
         }
         const logger = winston.createLogger({
-            format: winston.format.printf(error => `${moment.utc().format('YYYY-MM-DD HH:mm Z')} [${error.level}]: ${error.message}`),
+            format: winston.format.printf(error => `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${error.message}`),
             transports,
             exitOnError: false,
         });
