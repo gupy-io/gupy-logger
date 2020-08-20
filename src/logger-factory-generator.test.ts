@@ -82,7 +82,7 @@ describe('gupy-logger', () => {
         expect(lastLogstashLog.message).to.equal('any info');
         expect(lastLogstashLog.level).to.equal('info');
 
-        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[info]: any info/);
+        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[info]: any info/);
         expect(lastConsoleLog[symbolLevel]).to.equal('info');
     });
 
@@ -100,7 +100,7 @@ describe('gupy-logger', () => {
         expect(lastLogstashLog.message).to.equal('any warn');
         expect(lastLogstashLog.level).to.equal('warn');
 
-        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[warn]: any warn/);
+        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[warn]: any warn/);
         expect(lastConsoleLog[symbolLevel]).to.equal('warn');
     });
 
@@ -117,11 +117,11 @@ describe('gupy-logger', () => {
         expect(lastLogstashLog.message).to.equal('any error');
 
         expect(lastSentryLog).to.deep.equal(expectedLog);
-        expect(lastSentryLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[error]: any error/);
+        expect(lastSentryLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[error]: any error/);
         expect(lastSentryLog[symbolLevel]).to.equal('error');
 
         expect(lastConsoleLog).to.be.deep.equal(expectedLog);
-        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[error]: any error/);
+        expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[error]: any error/);
         expect(lastConsoleLog[symbolLevel]).to.equal('error');
     });
 });
