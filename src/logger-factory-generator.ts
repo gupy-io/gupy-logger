@@ -1,8 +1,6 @@
 import {Logger} from 'winston';
 import * as moment from 'moment';
 
-const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
-
 declare interface IConfig {
     sentry: {
         enabled: boolean,
@@ -52,7 +50,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                 return Object.assign(info, {
                   application: config.logstash.application || 'gupy',
                   pid: process.pid,
-                  time: moment.utc().format(DATETIME_FORMAT),
+                  time: moment.utc().format('YYYY-MM-DD HH:mm Z'),
                 });
             });
 
@@ -70,7 +68,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
 
         const logger: Logger = winston.createLogger({
             format: winston.format.printf(
-                error => `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${error.message}`,
+                error => `${moment.utc().format('YYYY-MM-DD HH:mm Z')} [${error.level}]: ${error.message}`,
             ),
             transports,
             exitOnError: false,
