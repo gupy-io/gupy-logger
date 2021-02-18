@@ -6,6 +6,7 @@ declare interface IConfig {
         enabled: boolean,
         dsn?: string,
         level?: string,
+        sampleRate?: number,
     };
     logstash?: {
         enabled?: boolean,
@@ -37,10 +38,15 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
         }));
 
         if (config.sentry.enabled) {
-            transports.push(new sentryTransportClass({
+            transports.push(
+              new sentryTransportClass({
                 dsn: config.sentry.dsn,
-                level: 'error',
-            }));
+                level: "error",
+                config: {
+                  sampleRate: config.sentry.sampleRate || 0.25,
+                },
+              })
+            );
         }
 
         if (config.logstash && config.logstash.enabled && logstashTransportClass) {
