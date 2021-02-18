@@ -17,9 +17,7 @@ const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTranspor
         }));
         if (config.sentry.enabled) {
             transports.push(new sentryTransportClass({
-                sentryOpts: {
-                    dsn: config.sentry.dsn,
-                },
+                dsn: config.sentry.dsn,
                 level: 'error',
                 config: {
                     sampleRate: config.sentry.sampleRate || 0.25
