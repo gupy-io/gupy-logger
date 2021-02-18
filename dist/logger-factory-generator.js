@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loggerFactoryGenerator = void 0;
 const moment = require("moment");
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
@@ -7,7 +8,7 @@ function prepareErrorToLog(error, messages = []) {
     }
     return error;
 }
-exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }) => {
+const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }) => {
     return ({ config }) => {
         const transports = [];
         transports.push(new consoleTransportClass({
@@ -17,6 +18,9 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
             transports.push(new sentryTransportClass({
                 dsn: config.sentry.dsn,
                 level: 'error',
+                config: {
+                    sampleRate: config.sentry.sampleRate || 0.25
+                }
             }));
         }
         if (config.logstash && config.logstash.enabled && logstashTransportClass) {
@@ -54,11 +58,11 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
                     messages.push(arg);
                 }
                 else if (typeof arg === 'object') {
-                    object = Object.assign({}, object, arg);
+                    object = Object.assign(Object.assign({}, object), arg);
                 }
             });
             if (error) {
-                return errorFn(prepareErrorToLog(error, messages), Object.assign({}, object, { stack: error.stack }));
+                return errorFn(prepareErrorToLog(error, messages), Object.assign(Object.assign({}, object), { stack: error.stack }));
             }
             else {
                 return errorFn.apply(logger, args);
@@ -67,3 +71,4 @@ exports.loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransp
         return logger;
     };
 };
+exports.loggerFactoryGenerator = loggerFactoryGenerator;

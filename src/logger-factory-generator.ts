@@ -28,7 +28,7 @@ export interface IFactoryInterface {
     config: IConfig;
 }
 
-type LoggerFactoryType = ({config}: IFactoryInterface) => Logger;
+type LoggerFactoryType = ({ config }: IFactoryInterface) => Logger;
 
 export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTransportClass, logstashTransportClass}): LoggerFactoryType => {
     return ({config}: IFactoryInterface) => {
@@ -38,15 +38,13 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
         }));
 
         if (config.sentry.enabled) {
-            transports.push(
-              new sentryTransportClass({
+            transports.push(new sentryTransportClass({
                 dsn: config.sentry.dsn,
-                level: "error",
+                level: 'error',
                 config: {
-                  sampleRate: config.sentry.sampleRate || 0.25,
-                },
-              })
-            );
+                    sampleRate: config.sentry.sampleRate || 0.25
+                }
+            }));
         }
 
         if (config.logstash && config.logstash.enabled && logstashTransportClass) {
@@ -93,7 +91,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                 } else if (typeof arg === 'string') {
                     messages.push(arg);
                 } else if (typeof arg === 'object') {
-                    object = {...object, ...arg};
+                    object = { ...object, ...arg };
                 }
             });
 
