@@ -8,6 +8,7 @@ declare interface IConfig {
         enabled: boolean,
         dsn?: string,
         level?: string,
+        sampleRate?: number,
     };
     logstash?: {
         enabled?: boolean,
@@ -29,7 +30,7 @@ export interface IFactoryInterface {
     config: IConfig;
 }
 
-type LoggerFactoryType = ({config}: IFactoryInterface) => Logger;
+type LoggerFactoryType = ({ config }: IFactoryInterface) => Logger;
 
 export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTransportClass, logstashTransportClass}): LoggerFactoryType => {
     return ({config}: IFactoryInterface) => {
@@ -44,6 +45,9 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                     dsn: config.sentry.dsn,
                 },
                 level: 'error',
+                config: {
+                    sampleRate: config.sentry.sampleRate || 0.25
+                }
             }));
         }
 
@@ -91,7 +95,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                 } else if (typeof arg === 'string') {
                     messages.push(arg);
                 } else if (typeof arg === 'object') {
-                    object = {...object, ...arg};
+                    object = { ...object, ...arg };
                 }
             });
 

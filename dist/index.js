@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.loggerFactory = void 0;
 const winston = require("winston");
 const { SentryTransport } = require('winston-node-sentry');
 const winston_logstash_transport_1 = require("winston-logstash-transport");

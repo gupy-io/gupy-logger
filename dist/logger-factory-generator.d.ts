@@ -4,6 +4,7 @@ declare interface IConfig {
         enabled: boolean;
         dsn?: string;
         level?: string;
+        sampleRate?: number;
     };
     logstash?: {
         enabled?: boolean;
