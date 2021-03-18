@@ -86,7 +86,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
         logger.error = (...args) => {
             if (!args || !args.length) return;
 
-            let error;
+            let error: Error;
             const messages = [];
             let object = {};
 
