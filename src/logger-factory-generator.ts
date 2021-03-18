@@ -71,7 +71,12 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
         }
 
         const logger: Logger = winston.createLogger({
-            format: winston.format.json(),
+            format: winston.format.combine(
+                winston.format.metadata(),
+                winston.format.errors({ stack: true }),
+                winston.format.timestamp(),
+                winston.format.json()
+              ),
             transports,
             exitOnError: false,
         });
