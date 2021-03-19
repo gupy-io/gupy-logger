@@ -1,5 +1,7 @@
-import {Logger} from 'winston';
+import {Logger, info, LeveledLogMethod} from 'winston';
 import * as moment from 'moment';
+import tracer from 'dd-trace';
+import formats = require("dd-trace/ext/formats")
 
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 
@@ -70,8 +72,14 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
             }));
         }
 
+        let span = tracer.scope().active();
+
         const logger: Logger = winston.createLogger({
             format: winston.format.combine(
+                winston.format((info) => {
+                    tracer.inject(span.context(), formats.LOG, info);
+                    return info
+                  }),
                 winston.format.metadata(),
                 winston.format.errors({ stack: true }),
                 winston.format.timestamp(),
