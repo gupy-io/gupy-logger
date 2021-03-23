@@ -71,9 +71,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
         }*/
 
         const logger: Logger = winston.createLogger({
-            format: winston.format.combine(
-            winston.format.errors({ stack: true }),
-            ({level, message}) => {
+            format: ({level, message}) => {
                 const span = tracer.scope().active();
                 const time = new Date().toISOString();
                 const record = { time, level, message };
@@ -85,7 +83,6 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
 
                 return JSON.stringify(record);
             },
-            winston.format.json()),
             transports,
             exitOnError: false,
         });
