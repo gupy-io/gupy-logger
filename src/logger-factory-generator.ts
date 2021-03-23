@@ -37,9 +37,7 @@ type LoggerFactoryType = ({ config }: IFactoryInterface) => Logger;
 export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTransportClass, logstashTransportClass}): LoggerFactoryType => {
     return ({config}: IFactoryInterface) => {
         const transports = [];
-        transports.push(new consoleTransportClass({
-            level: config.sentry.level,
-        }));
+        transports.push(new consoleTransportClass({level: config.sentry.level}));
 
         if (config.sentry.enabled) {
             transports.push(new sentryTransportClass({
@@ -51,7 +49,7 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
             }));
         }
 
-        if (config.logstash && config.logstash.enabled && logstashTransportClass) {
+        /*if (config.logstash && config.logstash.enabled && logstashTransportClass) {
             const appendMetaInfo = winston.format((info) => {
                 return Object.assign(info, {
                   application: config.logstash.application || 'gupy',
@@ -70,12 +68,11 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                     winston.format.timestamp()
                 ),
             }));
-        }
+        }*/
 
         const logger: Logger = winston.createLogger({
             format: winston.format.combine(
             winston.format.errors({ stack: true }),
-            winston.format.json(),
             ({level, message}) => {
                 const span = tracer.scope().active();
                 const time = new Date().toISOString();
@@ -84,9 +81,11 @@ export const loggerFactoryGenerator = ({winston, consoleTransportClass, sentryTr
                 if (span) {
                     tracer.inject(span.context(), formats.LOG, record);
                 }
+                console.log(JSON.stringify(record));
 
                 return JSON.stringify(record);
-            }),
+            },
+            winston.format.json()),
             transports,
             exitOnError: false,
         });
