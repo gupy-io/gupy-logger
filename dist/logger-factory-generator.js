@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loggerFactoryGenerator = void 0;
-const dd_trace_1 = require("dd-trace");
-const formats = require("dd-trace/ext/formats");
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
@@ -44,16 +42,7 @@ const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTranspor
             }));
         }*/
         const logger = winston.createLogger({
-            format: ({ level, message }) => {
-                const span = dd_trace_1.default.scope().active();
-                const time = new Date().toISOString();
-                const record = { time, level, message };
-                if (span) {
-                    dd_trace_1.default.inject(span.context(), formats.LOG, record);
-                }
-                console.log(JSON.stringify(record));
-                return JSON.stringify(record);
-            },
+            format: winston.format.json(),
             transports,
             exitOnError: false,
         });
