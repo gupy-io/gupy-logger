@@ -71,7 +71,7 @@ describe('gupy-logger', () => {
         chai_1.expect(lastLogstashLog.application).to.equal('gupy');
         chai_1.expect(lastLogstashLog.message).to.equal('any info');
         chai_1.expect(lastLogstashLog.level).to.equal('info');
-        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[info]: any info/);
+        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[info]: any info/);
         chai_1.expect(lastConsoleLog[symbolLevel]).to.equal('info');
     });
     it('should log warn only at console and logstash', () => {
@@ -85,7 +85,7 @@ describe('gupy-logger', () => {
         chai_1.expect(lastLogstashLog.application).to.equal('gupy');
         chai_1.expect(lastLogstashLog.message).to.equal('any warn');
         chai_1.expect(lastLogstashLog.level).to.equal('warn');
-        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[warn]: any warn/);
+        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[warn]: any warn/);
         chai_1.expect(lastConsoleLog[symbolLevel]).to.equal('warn');
     });
     it('should log error at all transport classes', () => {
@@ -98,10 +98,10 @@ describe('gupy-logger', () => {
         chai_1.expect(lastLogstashLog.level).to.equal('error');
         chai_1.expect(lastLogstashLog.message).to.equal('any error');
         chai_1.expect(lastSentryLog).to.deep.equal(expectedLog);
-        chai_1.expect(lastSentryLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[error]: any error/);
+        chai_1.expect(lastSentryLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[error]: any error/);
         chai_1.expect(lastSentryLog[symbolLevel]).to.equal('error');
         chai_1.expect(lastConsoleLog).to.be.deep.equal(expectedLog);
-        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2} \+\d{2}:\d{2} \[error]: any error/);
+        chai_1.expect(lastConsoleLog[symbolMessage]).to.match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d{3} \+\d{2}:\d{2} \[error]: any error/);
         chai_1.expect(lastConsoleLog[symbolLevel]).to.equal('error');
     });
 });

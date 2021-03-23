@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loggerFactoryGenerator = void 0;
-const moment = require("moment");
+const dd_trace_1 = require("dd-trace");
+const formats = require("dd-trace/ext/formats");
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
@@ -12,9 +13,7 @@ function prepareErrorToLog(error, messages = []) {
 const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }) => {
     return ({ config }) => {
         const transports = [];
-        transports.push(new consoleTransportClass({
-            level: config.sentry.level,
-        }));
+        transports.push(new consoleTransportClass({ level: config.sentry.level }));
         if (config.sentry.enabled) {
             transports.push(new sentryTransportClass({
                 dsn: config.sentry.dsn,
@@ -24,23 +23,37 @@ const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTranspor
                 }
             }));
         }
-        if (config.logstash && config.logstash.enabled && logstashTransportClass) {
+        /*if (config.logstash && config.logstash.enabled && logstashTransportClass) {
             const appendMetaInfo = winston.format((info) => {
                 return Object.assign(info, {
-                    application: config.logstash.application || 'gupy',
-                    pid: process.pid,
-                    time: moment.utc().format(DATETIME_FORMAT),
+                  application: config.logstash.application || 'gupy',
+                  pid: process.pid,
+                  time: moment.utc().format(DATETIME_FORMAT),
                 });
             });
+
             transports.push(new logstashTransportClass({
                 host: config.logstash.host,
                 port: config.logstash.port,
                 level: config.logstash.level,
-                format: winston.format.combine(appendMetaInfo(), winston.format.json(), winston.format.timestamp()),
+                format: winston.format.combine(
+                    appendMetaInfo(),
+                    winston.format.json(),
+                    winston.format.timestamp()
+                ),
             }));
-        }
+        }*/
         const logger = winston.createLogger({
-            format: winston.format.printf(error => `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${error.message}`),
+            format: winston.format.combine(winston.format.errors({ stack: true }), ({ level, message }) => {
+                const span = dd_trace_1.default.scope().active();
+                const time = new Date().toISOString();
+                const record = { time, level, message };
+                if (span) {
+                    dd_trace_1.default.inject(span.context(), formats.LOG, record);
+                }
+                console.log(JSON.stringify(record));
+                return JSON.stringify(record);
+            }, winston.format.json()),
             transports,
             exitOnError: false,
         });
