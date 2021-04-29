@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/afonsof/gupy-logger#readme",
   "dependencies": {
-    "dd-trace": "^0.31.1",
+    "dd-trace": "^0.31.4",
     "moment": "^2.24.0",
     "winston": "^3.2.1",
     "winston-logstash-transport": "^2.0.0",
