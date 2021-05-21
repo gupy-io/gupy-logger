@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loggerFactoryGenerator = void 0;
-const moment = require("moment");
-const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
         error.message = `${error.message} :: ${messages.join(',')}`;
@@ -11,13 +9,10 @@ function prepareErrorToLog(error, messages = []) {
 }
 const loggerFactoryGenerator = ({ winston, consoleTransportClass, }) => {
     return ({ config }) => {
-        const transports = [];
-        transports.push(new consoleTransportClass({
-            level: config.level,
-        }));
         const logger = winston.createLogger({
-            format: winston.format.printf((error) => `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${error.message}`),
-            transports,
+            level: config.level,
+            format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+            transports: new consoleTransportClass(),
             exitOnError: false,
         });
         const errorFn = logger.error;

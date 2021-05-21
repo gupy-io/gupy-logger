@@ -23,11 +23,6 @@ describe('gupy-logger', () => {
         logger = loggerFactory({ config: { level: 'info' } });
     });
     it('should init without logstash by default', () => {
-        const loggerFactory = logger_factory_generator_1.loggerFactoryGenerator({
-            winston,
-            consoleTransportClass: FakeConsoleTransport
-        });
-        logger = loggerFactory({ config: { level: 'info' } });
         chai_1.expect(logger).be.not.equal(undefined);
     });
     it('should log debug nowhere', () => {

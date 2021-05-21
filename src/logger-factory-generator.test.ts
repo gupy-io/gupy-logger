@@ -9,8 +9,6 @@ class FakeConsoleTransport extends TransportStream {
     lastConsoleLog = info;
   }
 }
-
-
 let logger;
 const symbolMessage = Symbol.for('message');
 const symbolLevel = Symbol.for('level');
