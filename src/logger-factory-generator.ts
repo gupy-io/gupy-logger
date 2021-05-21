@@ -1,5 +1,8 @@
 import { Logger } from 'winston';
-import winston = require('winston/lib/winston/config');
+import * as moment from 'moment';
+
+const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
+
 declare interface IConfig {
   level?: string;
 }
@@ -22,13 +25,21 @@ export const loggerFactoryGenerator = ({
   consoleTransportClass,
 }): LoggerFactoryType => {
   return ({ config }: IFactoryInterface) => {
+    const transports = [];
+    transports.push(
+      new consoleTransportClass({
+        level: config.level,
+      })
+    );
+
     const logger: Logger = winston.createLogger({
-      level: config.level,
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
+      format: winston.format.printf(
+        (error) =>
+          `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${
+            error.message
+          }`
       ),
-      transports: new consoleTransportClass(),
+      transports,
       exitOnError: false,
     });
 
@@ -37,7 +48,7 @@ export const loggerFactoryGenerator = ({
     logger.error = (...args) => {
       if (!args || !args.length) return;
 
-      let error : any;
+      let error;
       const messages = [];
       let object = {};
 
