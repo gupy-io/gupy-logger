@@ -23,7 +23,7 @@ describe('gupy-logger', () => {
     logger = loggerFactory({ config: { level: 'info' } });
   });
 
-  it('should init without logstash by default', () => {
+  it('should init by default', () => {
     expect(logger).be.not.equal(undefined);
   });
 
@@ -32,7 +32,7 @@ describe('gupy-logger', () => {
     expect(lastConsoleLog).to.deep.equal(null);
   });
 
-  it('should log info only at console and logstash', () => {
+  it('should log info at console', () => {
     const expectedLog = {
       level: 'info',
       message: 'any info',
@@ -45,7 +45,7 @@ describe('gupy-logger', () => {
     expect(lastConsoleLog[symbolLevel]).to.equal('info');
   });
 
-  it('should log warn only at console and logstash', () => {
+  it('should log warn at console', () => {
     const expectedLog = {
       level: 'warn',
       message: 'any warn',
@@ -59,7 +59,7 @@ describe('gupy-logger', () => {
     expect(lastConsoleLog[symbolLevel]).to.equal('warn');
   });
 
-  it('should log error at all transport classes', () => {
+  it('should log error at console', () => {
     const expectedLog = {
       level: 'error',
       message: 'any error',
