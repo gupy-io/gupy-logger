@@ -1,47 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loggerFactoryGenerator = void 0;
-const moment = require("moment");
-const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 function prepareErrorToLog(error, messages = []) {
     if (messages.length) {
         error.message = `${error.message} :: ${messages.join(',')}`;
     }
     return error;
 }
-const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }) => {
+const loggerFactoryGenerator = ({ winston, consoleTransportClass, }) => {
     return ({ config }) => {
-        const transports = [];
-        transports.push(new consoleTransportClass({
-            level: config.sentry.level,
-        }));
-        if (config.sentry.enabled) {
-            transports.push(new sentryTransportClass({
-                dsn: config.sentry.dsn,
-                level: 'error',
-                config: {
-                    sampleRate: config.sentry.sampleRate || 0.25
-                }
-            }));
-        }
-        if (config.logstash && config.logstash.enabled && logstashTransportClass) {
-            const appendMetaInfo = winston.format((info) => {
-                return Object.assign(info, {
-                    application: config.logstash.application || 'gupy',
-                    pid: process.pid,
-                    time: moment.utc().format(DATETIME_FORMAT),
-                });
-            });
-            transports.push(new logstashTransportClass({
-                host: config.logstash.host,
-                port: config.logstash.port,
-                level: config.logstash.level,
-                format: winston.format.combine(appendMetaInfo(), winston.format.json(), winston.format.timestamp()),
-            }));
-        }
         const logger = winston.createLogger({
-            format: winston.format.printf(error => `${moment.utc().format(DATETIME_FORMAT)} [${error.level}]: ${error.message}`),
-            transports,
+            level: config.level,
+            format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+            transports: new consoleTransportClass(),
             exitOnError: false,
         });
         const errorFn = logger.error;
