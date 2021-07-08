@@ -19,7 +19,7 @@ export interface IFactoryInterface {
     config: IConfig;
 }
 declare type LoggerFactoryType = ({ config }: IFactoryInterface) => Logger;
-export declare const loggerFactoryGenerator: ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass }: {
+export declare const loggerFactoryGenerator: ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass, }: {
     winston: any;
     consoleTransportClass: any;
     sentryTransportClass: any;
