@@ -9,7 +9,7 @@ function prepareErrorToLog(error, messages = []) {
     }
     return error;
 }
-const loggerFactoryGenerator = ({ winston, consoleTransportClass, sentryTransportClass, logstashTransportClass, }) => ({ config }) => {
+const loggerFactoryGenerator = ({ winston, consoleTransportClass, }) => ({ config }) => {
     const transports = [];
     transports.push(new consoleTransportClass({
         level: config.level,

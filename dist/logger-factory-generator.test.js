@@ -4,22 +4,10 @@ const chai_1 = require("chai");
 const winston = require("winston");
 const logger_factory_generator_1 = require("./logger-factory-generator");
 const TransportStream = require("winston-transport");
-let lastSentryLog;
-class FakeSentryTransport extends TransportStream {
-    log(info) {
-        lastSentryLog = info;
-    }
-}
 let lastConsoleLog;
 class FakeConsoleTransport extends TransportStream {
     log(info) {
         lastConsoleLog = info;
-    }
-}
-let lastLogstashLog;
-class FakeLogstashTransport extends TransportStream {
-    log(info) {
-        lastLogstashLog = info;
     }
 }
 let logger;
@@ -28,19 +16,13 @@ const symbolLevel = Symbol.for('level');
 describe('gupy-logger', () => {
     beforeEach(() => {
         lastConsoleLog = null;
-        lastSentryLog = null;
-        lastLogstashLog = null;
         const loggerFactory = logger_factory_generator_1.loggerFactoryGenerator({
             winston,
             consoleTransportClass: FakeConsoleTransport,
-            sentryTransportClass: FakeSentryTransport,
-            logstashTransportClass: FakeLogstashTransport,
         });
         logger = loggerFactory({
             config: {
                 level: 'info',
-                sentry: { enabled: true, dsn: 'any', level: 'info' },
-                logstash: { enabled: true, host: 'logstashhost', port: 12345, level: 'info' },
             },
         });
     });
@@ -48,13 +30,10 @@ describe('gupy-logger', () => {
         const loggerFactory = logger_factory_generator_1.loggerFactoryGenerator({
             winston,
             consoleTransportClass: FakeConsoleTransport,
-            sentryTransportClass: FakeSentryTransport,
-            logstashTransportClass: undefined,
         });
         logger = loggerFactory({
             config: {
                 level: 'info',
-                sentry: { enabled: true, dsn: 'any', level: 'info' },
             },
         });
         chai_1.expect(logger).be.not.equal(undefined);
