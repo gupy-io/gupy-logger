@@ -5,19 +5,6 @@ const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS Z';
 
 declare interface IConfig {
   level?: string;
-  sentry: {
-    enabled: boolean,
-    dsn?: string,
-    level?: string,
-    sampleRate?: number,
-  };
-  logstash?: {
-    enabled?: boolean,
-    application?: string,
-    host?: string,
-    port?: number,
-    level?: string,
-  };
 }
 
 function prepareErrorToLog(error, messages = []) {
@@ -36,8 +23,6 @@ type LoggerFactoryType = ({ config }: IFactoryInterface) => Logger;
 export const loggerFactoryGenerator = ({
   winston,
   consoleTransportClass,
-  sentryTransportClass,
-  logstashTransportClass,
 }): LoggerFactoryType => ({ config }: IFactoryInterface) => {
   const transports = [];
   transports.push(new consoleTransportClass({
