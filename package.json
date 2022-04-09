@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/afonsof/gupy-logger#readme",
   "dependencies": {
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {
